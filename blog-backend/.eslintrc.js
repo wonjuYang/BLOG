@@ -1,3 +1,5 @@
+const path = require('path');
+
 export default {
     "env": {
         "browser": true,
@@ -7,6 +9,11 @@ export default {
         "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "settings" : {
+        "import/resolver" : {
+            node: { paths: [path.resolve('./src')]}
+        },
+    },
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
