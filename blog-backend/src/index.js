@@ -1,12 +1,14 @@
 require('dotenv').config();
 
 const mongoose = require('mongoose');
+const session = require('koa-session');
 
 
 const {
-    PORT: port = 4000, //값이 존재하지 않는다면 4000을 기본 값으로 사용
-    MONGO_URI: mongoURI
-} = process.env;
+    PORT: port = 4000, // 값이 존재하지 않는다면 4000을 기본값으로 사용
+    MONGO_URI: mongoURI,
+    COOKIE_SIGN_KEY: signKey
+  } = process.env;
 
 mongoose.Promise = global.Promise; // Node의 Promise를 사용하도록 설정
 mongoose.connect(mongoURI, {useNewUrlParser: true}).then(() => {
@@ -52,6 +54,14 @@ router.use('/api' , api.routes()); //api 라우트 적용
 
 //라우터 적용 전에 bodyParser 적용
 app.use(bodyParser());
+
+const sessionConfig = {
+    maxAge: 86400000,
+    //signed: true(기본적으로 설정되어 있습니다.)
+}
+
+app.use(session(sessionConfig, app));
+app.keys=[signKey];
 
 //app인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods());
